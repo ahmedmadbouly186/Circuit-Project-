@@ -1,0 +1,12 @@
+﻿  Capacaitor.cpp
+  Component.cpp
+  Inductor.cpp
+  main.cpp
+  Resistance.cpp
+  Generating code
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.27.29110\include\complex(594): warning C4723: potential divide by 0
+  172 of 309 functions (55.7%) were compiled, the rest were copied from previous compilation.
+    70 functions were new in current compilation
+    38 functions had inline decision re-evaluated but remain unchanged
+  Finished generating code
+  Circuits.vcxproj -> D:\pdf\Engineering\Programming\Circuits\x64\Release\Circuits.exe
