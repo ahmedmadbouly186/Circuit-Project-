@@ -13,11 +13,11 @@
 using namespace std;
 using namespace Eigen;
 using namespace std::complex_literals;
+#include"Component.h"
+Component* searcher(string x);
 #define n_max 10
 Component* complist[n_max] = { NULL };
-Component* searcher(string x);
 int counter = 0;
-
 
 void simplification(Vsrc a, complex<double> b) 
 {
@@ -62,7 +62,129 @@ int main()
 	Eigen::Matrix3cd f;
 	f <<  c1,c2,c3, 7.0 +5i, 8, 9,10,11,12;
 	cout << f<<endl;
+	/////////////////////////////////////Ahmed hany
+	int num_non_sim_nodes = 3;
+	int num = num_non_sim_nodes - 1;
+	Node n1, n2;
+	Node* arr[2] = { &n1,&n2 };
+	//Eigen::MatrixXd G(num, num);
+	Eigen::MatrixXcd m(num, num);
+	for (int i = 0; i < num; i++)
+	{
+		for (int j = 0; j < num; j++)
+		{
+			m(i, j).real(0);
+			m(i, j).imag(0);
+		}
+	}
+	Eigen::MatrixXcd I(num, 1);
+	for (int i = 0; i < num; i++)
+	{
+		I(i, 1) = 0;
+	}
+	/*m(0, 0).real(3);
+	m(0, 0).imag(5);
+	m(1, 0).real(3);
+	m(1, 0).imag(5);
+	m(2, 0).real(3);
+	m(2, 0).imag(5);
+	m(2, 2).real(3);
+	m(2, 2).imag(5);
+	cout << m;*/
+	for (int j = 0; j < num; j++)
+	{
+		for (int k = 0; k < num; k++)
+		{
+			//
+			//
+			complex <double> Admittance_s(0, 0);
+			complex <double> Admittance_d(0, 0);
+			for (int i = 0; i < counter; i++)
+			{
+				Component* comp = complist[i];
+				Resistance* resistance = dynamic_cast<Resistance*>(comp);
+				Inductor* inductor = dynamic_cast<Inductor*>(comp);
+				Capacaitor* capacaitor = dynamic_cast<Capacaitor*>(comp);
+				if (resistance != NULL)
+				{
+					if ((resistance->get_node1() == arr[k]) || (resistance->get_node2() == arr[k]))
+					{
+						complex <double> r;
+						r = 1.0 / resistance->get_Impedance();
+						Admittance_s += r;
+					}
+					if ((resistance->get_node1() == arr[j]) && (resistance->get_node2() == arr[k]))
+					{
+						complex <double> r;
+						r = 1.0 / resistance->get_Impedance();
+						Admittance_d += r;
+					}
+				}
+				else if (inductor != NULL)
+				{
+					if ((inductor->get_node1() == arr[k]) || (inductor->get_node2() == arr[k]))
+					{
+						complex <double> in;
+						in = inductor->get_Admittance();
+						Admittance_s += in;
+					}
+					if ((inductor->get_node1() == arr[j]) && (inductor->get_node2() == arr[k]))
+					{
+						complex <double> r;
+						r = inductor->get_Admittance();
+						Admittance_d += r;
+					}
+				}
+				else if (capacaitor != NULL)
+				{
+					if ((capacaitor->get_node1() == arr[k]) || (capacaitor->get_node2() == arr[k]))
+					{
+						complex <double> ca;
+						ca = capacaitor->get_Admittance();
+						Admittance_s += ca;
+					}
+					if ((capacaitor->get_node1() == arr[j]) && (capacaitor->get_node2() == arr[k]))
+					{
+						complex <double> r;
+						r = capacaitor->get_Admittance();
+						Admittance_d += r;
+					}
 
+				}
+			}
+			if (j == k)
+			{
+				m(k, k) = Admittance_s;
+			}
+			else
+			{
+				m(j, k) = -Admittance_d;
+			}
+		}
+	}
+	for (int j = 0; j < num; j++)
+	{
+		for (int i = 0; i < counter; i++)
+		{
+			Component* comp = complist[i];
+			Isrc* current = dynamic_cast<Isrc*>(comp);
+			if (current != NULL)
+			{
+				if (current->get_node1() == arr[j])
+				{
+					complex <double> curr = current->getcomplex();
+					I(j, 1) += curr;
+
+				}
+				if (current->get_node2() == arr[j])
+				{
+					complex <double> curr = -current->getcomplex();
+					I(j, 1) += curr;
+				}
+			}
+		}
+	}
+	//////////////////////////////////////Ahmed hany
 	/*
 	ifstream inputfile;
 	ofstream outputfile;
@@ -194,99 +316,100 @@ int main()
 		}
 	}
 
-	///////////////////hany
-	int num_non_sim_nodes = 3;
-	int num = num_non_sim_nodes - 1;
-	Node* arr[2] = { 1,2 };
-	//Eigen::MatrixXd G(num, num);
-	Eigen::MatrixXcd m(num, num);
-	for (int i = 0; i < num; i++)
-	{
-		for (int j = 0; j < num; j++)
-		{
-			m(i, j).real(0);
-			m(i, j).imag(0);
-		}
-	}
-	Eigen::MatrixXcd I(1,num);
-	/*m(0, 0).real(3);
-	m(0, 0).imag(5);
-	m(1, 0).real(3);
-	m(1, 0).imag(5);
-	m(2, 0).real(3);
-	m(2, 0).imag(5);
-	m(2, 2).real(3);
-	m(2, 2).imag(5);
-	cout << m;*/
-	for (int j = 0; j < num; j++)
-	{
-		for (int k = 0; k < num; k++)
-		{
-			complex <double> Admittance_s(0, 0);
-			complex <double> Admittance_d(0, 0);
-			for (int i = 0; i < counter; i++)
-			{
-				Component* comp = complist[i];
-				Resistance* resistance = dynamic_cast<Resistance*>(comp);
-				Inductor* inductor = dynamic_cast<Inductor*>(comp);
-				Capacaitor* capacaitor = dynamic_cast<Capacaitor*>(comp);
-				if (resistance != NULL)
-				{
-					if ((resistance->get_node1() == arr[k]) || (resistance->get_node2() == arr[k]))
-					{
-						complex <double> r;
-						r = 1.0 / resistance->get_Impedance();
-						Admittance_s += r;
-					}
-					if ((resistance->get_node1() == arr[j]) && (resistance->get_node2() == arr[k]))
-					{
-						complex <double> r;
-						r = 1.0 / resistance->get_Impedance();
-						Admittance_d += r;
-					}
-				}
-				else if (inductor != NULL)
-				{
-					if ((inductor->get_node1() == arr[k]) || (inductor->get_node2() == arr[k]))
-					{
-						complex <double> in;
-						in = inductor->get_Admittance();
-						Admittance_s += in;
-					}
-					if ((inductor->get_node1() == arr[j]) && (inductor->get_node2() == arr[k]))
-					{
-						complex <double> r;
-						r = 1.0 / inductor->get_Impedance();
-						Admittance_d += r;
-					}
-				}
-				else if (capacaitor != NULL)
-				{
-					if ((capacaitor->get_node1() == arr[k]) || (capacaitor->get_node2() == arr[k]))
-					{
-						complex <double> ca;
-						ca = capacaitor->get_Admittance();
-						Admittance_s += ca;
-					}
-					if ((capacaitor->get_node1() == arr[j]) && (capacaitor->get_node2() == arr[k]))
-					{
-						complex <double> r;
-						r = 1.0 / capacaitor->get_Impedance();
-						Admittance_d += r;
-					}
+	/////////////////////hany
+	//int num_non_sim_nodes = 3;
+	//int num = num_non_sim_nodes - 1;
+	//Node* arr[2] = { 1,2 };
+	////Eigen::MatrixXd G(num, num);
+	//Eigen::MatrixXcd m(num, num);
+	//for (int i = 0; i < num; i++)
+	//{
+	//	for (int j = 0; j < num; j++)
+	//	{
+	//		m(i, j).real(0);
+	//		m(i, j).imag(0);
+	//	}
+	//}
+	//Eigen::MatrixXcd I(1,num);
+	///*m(0, 0).real(3);
+	//m(0, 0).imag(5);
+	//m(1, 0).real(3);
+	//m(1, 0).imag(5);
+	//m(2, 0).real(3);
+	//m(2, 0).imag(5);
+	//m(2, 2).real(3);
+	//m(2, 2).imag(5);
+	//cout << m;*/
+	//for (int j = 0; j < num; j++)
+	//{
+	//	for (int k = 0; k < num; k++)
+	//	{
+	//		complex <double> Admittance_s(0, 0);
+	//		complex <double> Admittance_d(0, 0);
+	//		for (int i = 0; i < counter; i++)
+	//		{
+	//			Component* comp = complist[i];
+	//			Resistance* resistance = dynamic_cast<Resistance*>(comp);
+	//			Inductor* inductor = dynamic_cast<Inductor*>(comp);
+	//			Capacaitor* capacaitor = dynamic_cast<Capacaitor*>(comp);
+	//			if (resistance != NULL)
+	//			{
+	//				if ((resistance->get_node1() == arr[k]) || (resistance->get_node2() == arr[k]))
+	//				{
+	//					complex <double> r;
+	//					r = 1.0 / resistance->get_Impedance();
+	//					Admittance_s += r;
+	//				}
+	//				if ((resistance->get_node1() == arr[j]) && (resistance->get_node2() == arr[k]))
+	//				{
+	//					complex <double> r;
+	//					r = 1.0 / resistance->get_Impedance();
+	//					Admittance_d += r;
+	//				}
+	//			}
+	//			else if (inductor != NULL)
+	//			{
+	//				if ((inductor->get_node1() == arr[k]) || (inductor->get_node2() == arr[k]))
+	//				{
+	//					complex <double> in;
+	//					in = inductor->get_Admittance();
+	//					Admittance_s += in;
+	//				}
+	//				if ((inductor->get_node1() == arr[j]) && (inductor->get_node2() == arr[k]))
+	//				{
+	//					complex <double> r;
+	//					r = 1.0 / inductor->get_Impedance();
+	//					Admittance_d += r;
+	//				}
+	//			}
+	//			else if (capacaitor != NULL)
+	//			{
+	//				if ((capacaitor->get_node1() == arr[k]) || (capacaitor->get_node2() == arr[k]))
+	//				{
+	//					complex <double> ca;
+	//					ca = capacaitor->get_Admittance();
+	//					Admittance_s += ca;
+	//				}
+	//				if ((capacaitor->get_node1() == arr[j]) && (capacaitor->get_node2() == arr[k]))
+	//				{
+	//					complex <double> r;
+	//					r = 1.0 / capacaitor->get_Impedance();
+	//					Admittance_d += r;
+	//				}
 
-				}
-			}
-			if (j == k)
-			{
-				m(k, k) = Admittance_s;
-			}
-			else
-			{
-				m(j, k) = -Admittance_d;
-			}
-		}
-	}
+	//			}
+	//		}
+	//		if (j == k)
+	//		{
+	//			m(k, k) = Admittance_s;
+	//		}
+	//		else
+	//		{
+	//			m(j, k) = -Admittance_d;
+	//		}
+	//	}
+	//}
+	////////////////
 	MatrixXcd V = CalculateVoltNode(m , I); // function calculate volt of each node
 	Node* nodes = new Node[num];  // should be created above 
 	for (int i = 0; i < num; i++)
@@ -311,7 +434,7 @@ MatrixXcd CalculateVoltNode(MatrixXcd G, MatrixXcd I)
 	V = G.inverse() * I;
 	return V;
 }
-
+//////////////////////////////Ahmed hany
 Component* searcher(string x)
 {
 	Component* comp = NULL;
@@ -325,6 +448,20 @@ Component* searcher(string x)
 	}
 	return comp;
 }
+////////////////Ahmed hany
+//Component* searcher(string x)
+//{
+//	Component* comp = NULL;
+//	for (int i = 0; i < counter; i++)
+//	{
+//		string name = complist[i]->get_name();
+//		if ((name.compare(x) == 0))
+//		{
+//			comp = complist[i];
+//		}
+//	}
+//	return comp;
+//}
 
 
 

@@ -1,12 +1,22 @@
 ﻿  Branch.cpp
-C:\Users\kcs\Documents\GitHub\Circuit-Project-\Circuits\Circuits\Branch.cpp(6,1): error C2512: 'Vsrc': no appropriate default constructor available
-C:\Users\kcs\Documents\GitHub\Circuit-Project-\Circuits\Circuits\vsrc.h(4,7): message : see declaration of 'Vsrc'
+E:\college\CMP first year\first term\circuits\project\repo circiuts\Circuit-Project-\Circuits\Circuits\Branch.cpp(6,1): error C2512: 'Vsrc': no appropriate default constructor available
+E:\college\CMP first year\first term\circuits\project\repo circiuts\Circuit-Project-\Circuits\Circuits\vsrc.h(4,7): message : see declaration of 'Vsrc'
+  Capacaitor.cpp
+  Component.cpp
+  Inductor.cpp
+  isrc.cpp
   main.cpp
-C:\Users\kcs\Documents\GitHub\Circuit-Project-\Circuits\Circuits\main.cpp(27,31): warning C4244: 'argument': conversion from '_Ty' to 'float', possible loss of data
+E:\college\CMP first year\first term\circuits\project\repo circiuts\Circuit-Project-\Circuits\Circuits\main.cpp(27,31): warning C4244: 'argument': conversion from '_Ty' to 'float', possible loss of data
           with
           [
               _Ty=double
           ]
-C:\Users\kcs\Documents\GitHub\Circuit-Project-\Circuits\Circuits\main.cpp(200,23): error C2440: 'initializing': cannot convert from 'int' to 'Node *'
-C:\Users\kcs\Documents\GitHub\Circuit-Project-\Circuits\Circuits\main.cpp(200,19): message : Conversion from integral type to pointer type requires reinterpret_cast, C-style cast or function-style cast
+E:\college\CMP first year\first term\circuits\project\repo circiuts\Circuit-Project-\Circuits\Circuits\main.cpp(417,30): error C2664: 'void Node::setvoltage(double)': cannot convert argument 1 from 'std::complex<double>' to 'double'
+E:\college\CMP first year\first term\circuits\project\repo circiuts\Circuit-Project-\Circuits\Circuits\main.cpp(417,24): message : No user-defined-conversion operator available that can perform this conversion, or the operator cannot be called
+E:\college\CMP first year\first term\circuits\project\repo circiuts\Circuit-Project-\Circuits\Circuits\Node.h(16,7): message : see declaration of 'Node::setvoltage'
+E:\college\CMP first year\first term\circuits\project\repo circiuts\Circuit-Project-\Circuits\Circuits\main.cpp(420,36): error C2512: 'Branch': no appropriate default constructor available
+  Node.cpp
+E:\college\CMP first year\first term\circuits\project\repo circiuts\Circuit-Project-\Circuits\Circuits\Node.cpp(4,6): warning C4101: 'num_connections': unreferenced local variable
+  Resistance.cpp
+  vsrc.cpp
   Generating Code...
