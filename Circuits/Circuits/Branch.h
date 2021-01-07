@@ -23,6 +23,11 @@ public:
 	complex <double>getz();
 	Vsrc getvolt();
 	complex<double> getcurrent();
+	////////////// sabry
+
+	void Calculatecurrent();
+
+	///////////////
 	int getnum() {
 		return num;
 	}

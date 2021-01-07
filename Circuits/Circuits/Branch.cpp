@@ -39,6 +39,10 @@ complex<double> Branch::getcurrent()
 {
 	return current;
 }
+void Branch::Calculatecurrent()
+{
+	current = (node1->getvoltage() - node2->getvoltage()) / z;
+}
 void Branch::setvolt(Vsrc c) {
 	volt = c;
 }
