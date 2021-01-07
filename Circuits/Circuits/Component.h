@@ -17,7 +17,7 @@ public:
 	int get_node1();
 	int get_node2();
 	string get_name();
-	~Component()
+	virtual ~Component()
 	{
 
 	}
