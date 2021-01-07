@@ -116,6 +116,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>E:\c++ libraries\Eigen\eigen-3.3.9;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -140,16 +141,20 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Branch.cpp" />
     <ClCompile Include="Capacaitor.cpp" />
     <ClCompile Include="Component.cpp" />
     <ClCompile Include="Inductor.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Node.cpp" />
     <ClCompile Include="Resistance.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Branch.h" />
     <ClInclude Include="Capacaitor.h" />
     <ClInclude Include="Component.h" />
     <ClInclude Include="Inductor.h" />
+    <ClInclude Include="Node.h" />
     <ClInclude Include="Resistance.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
