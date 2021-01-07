@@ -39,3 +39,9 @@ complex<double> Branch::getcurrent()
 {
 	return current;
 }
+void Branch::setvolt(Vsrc c) {
+	volt = c;
+}
+Vsrc Branch::getvolt() {
+	return volt;
+}
