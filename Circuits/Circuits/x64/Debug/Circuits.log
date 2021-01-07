@@ -1,0 +1,10 @@
+﻿  ccvs.cpp
+C:\Users\kcs\Documents\GitHub\Circuit-Project-\Circuits\Circuits\ccvs.cpp(28,9): error C2065: 'mag': undeclared identifier
+C:\Users\kcs\Documents\GitHub\Circuit-Project-\Circuits\Circuits\ccvs.cpp(28,19): error C2065: 'phase': undeclared identifier
+C:\Users\kcs\Documents\GitHub\Circuit-Project-\Circuits\Circuits\ccvs.cpp(29,9): error C2065: 'mag': undeclared identifier
+C:\Users\kcs\Documents\GitHub\Circuit-Project-\Circuits\Circuits\ccvs.cpp(29,19): error C2065: 'phase': undeclared identifier
+  isrc.cpp
+C:\Users\kcs\Documents\GitHub\Circuit-Project-\Circuits\Circuits\isrc.cpp(2,80): error C2664: 'Component::Component(const Component &)': cannot convert argument 2 from 'Node *' to 'int'
+C:\Users\kcs\Documents\GitHub\Circuit-Project-\Circuits\Circuits\isrc.cpp(2,74): message : There is no context in which this conversion is possible
+C:\Users\kcs\Documents\GitHub\Circuit-Project-\Circuits\Circuits\Component.h(16,2): message : see declaration of 'Component::Component'
+  Generating Code...

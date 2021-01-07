@@ -36,6 +36,7 @@
     <ClCompile Include="Inductor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+<<<<<<< Updated upstream
     <ClCompile Include="vsrc.cpp">
       <Filter>Header Files</Filter>
     </ClCompile>
@@ -44,6 +45,13 @@
     </ClCompile>
     <ClCompile Include="isrc.cpp">
       <Filter>Header Files</Filter>
+=======
+    <ClCompile Include="ccvs.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="isrc.cpp">
+      <Filter>Source Files</Filter>
+>>>>>>> Stashed changes
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -65,6 +73,7 @@
     <ClInclude Include="Branch.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+<<<<<<< Updated upstream
     <ClInclude Include="isrc.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -74,5 +83,16 @@
     <ClInclude Include="ccvs.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+=======
+    <ClInclude Include="ccvs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="isrc.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="circuit.txt" />
+>>>>>>> Stashed changes
   </ItemGroup>
 </Project>
