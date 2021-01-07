@@ -21,6 +21,7 @@ double Vsrc::getphase() {
 complex<double> Vsrc::getcomplex() {
 	x.real(mag * cos(phase));
 	x.imag(mag * sin(phase));
+	return x;
 }
 Vsrc::~Vsrc() {}
 Node* Vsrc::getnode1() {

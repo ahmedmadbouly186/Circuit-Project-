@@ -1,6 +1,6 @@
 #include "Resistance.h"
 
-Resistance::Resistance(double r, string b,int n1 ,int n2 )
+Resistance::Resistance(double r, string b, Node* n1 , Node* n2 )
 	:Component(b,n1,n2)
 {
 	z.imag(0);

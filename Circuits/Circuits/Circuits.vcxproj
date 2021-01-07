@@ -143,7 +143,6 @@
   <ItemGroup>
     <ClCompile Include="Branch.cpp" />
     <ClCompile Include="Capacaitor.cpp" />
-    <ClCompile Include="ccvs.cpp" />
     <ClCompile Include="Component.cpp" />
     <ClCompile Include="Inductor.cpp" />
     <ClCompile Include="isrc.cpp" />
@@ -155,7 +154,6 @@
   <ItemGroup>
     <ClInclude Include="Branch.h" />
     <ClInclude Include="Capacaitor.h" />
-    <ClInclude Include="ccvs.h" />
     <ClInclude Include="Component.h" />
     <ClInclude Include="Inductor.h" />
     <ClInclude Include="isrc.h" />

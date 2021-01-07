@@ -24,8 +24,9 @@ double ccvs::getcoff() {
 	return coff;
 }
 
-complex<double> ccvs::getcomplex() {
+complex<double> ccvs::getcomplex(double mag,double phase) {
 	x.real(mag * cos(phase));
 	x.imag(mag * sin(phase));
+	return x;
 }
 ccvs::~ccvs() {};

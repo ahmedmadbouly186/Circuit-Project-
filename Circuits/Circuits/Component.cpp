@@ -1,15 +1,15 @@
 #include "Component.h"
-Component::Component(string a, int n1, int n2)
+Component::Component(string a, Node* n1, Node* n2)
 {
 	a = name;
 	node1 = n1;
 	node2 = n2;
 }
-int Component::get_node1()
+Node* Component::get_node1()
 {
 	return node1;
 }
-int Component::get_node2()
+Node* Component::get_node2()
 {
 	return node2;
 }

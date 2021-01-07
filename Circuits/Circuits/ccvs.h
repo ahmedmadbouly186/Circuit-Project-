@@ -18,7 +18,7 @@ public:
 	void setnode3(int);
 	void setnode4(int);
 	double getcoff();
-	complex<double> getcomplex();
+	complex<double> getcomplex(double mag, double phase);
 	~ccvs();
 };
 

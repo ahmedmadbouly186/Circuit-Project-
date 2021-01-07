@@ -1,6 +1,6 @@
 #include "Inductor.h"
 
-Inductor::Inductor(double r, double f, string b, int n1, int n2)
+Inductor::Inductor(double r, double f, string b, Node* n1, Node* n2)
 	:Component(b, n1, n2)
 {
 	w = f;

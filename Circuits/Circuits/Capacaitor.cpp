@@ -1,5 +1,5 @@
 #include "Capacaitor.h"
-Capacaitor::Capacaitor(double r,double f, string b, int n1, int n2)
+Capacaitor::Capacaitor(double r,double f, string b, Node* n1, Node* n2)
 	:Component(b, n1, n2)
 {
 	w = f;

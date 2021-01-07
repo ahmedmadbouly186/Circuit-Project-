@@ -9,7 +9,7 @@ private:
 	complex<double> admittance;
 
 public:
-	Inductor(double, double, string, int, int);
+	Inductor(double, double, string, Node*, Node*);
 	void set_Impedance(double);
 	complex <double> get_Impedance();
 	complex <double> get_Admittance();

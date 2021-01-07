@@ -21,5 +21,6 @@ double Isrc::getphase() {
 complex<double> Isrc::getcomplex() {
 	x.real(mag * cos(phase));
 	x.imag(mag * sin(phase));
+	return x;
 }
 Isrc::~Isrc() {}
