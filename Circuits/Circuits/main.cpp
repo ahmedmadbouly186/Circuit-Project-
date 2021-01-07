@@ -4,31 +4,40 @@
 #include<Eigen/Dense>
 #include<Eigen/Sparse>
 #include<complex>
-#include "Capacaitor.h"
-#include "Inductor.h"
-#include "Resistance.h"
+#include"vsrc.h"
+#include"isrc.h"
+#include"Branch.h"
 using namespace std;
 using namespace Eigen;
 using namespace std::complex_literals;
-#include"Component.h"
-Component* searcher(string x);
-#define n_max 10
-Component* complist[n_max] = { NULL };
-int counter = 0;
 
-//enum Component
-//{
-//	w,
-//	vsrc,
-//	isrc,
-//	vcvs,
-//	ccvs,
-//	vccs,
-//	cccs,
-//	res,
-//	cap,
-//	ind
-//};
+
+void simplification(Vsrc a, complex<double> b) 
+{
+	complex<double> x = (a.getcomplex()) / b;
+	double p = x.real() * x.real() +x.imag() * x.imag();;
+	double mag = sqrt(p);
+	double phase = tanf(x.imag() / x.real());
+	Isrc c (a.getname(), a.getnode1(), a.getnode2(), phase, mag);
+	Branch q((a.getnode1()), a.getnode2());
+	q.setcurrent(c.getcomplex());
+	c.zerosetters();
+}
+
+
+enum component
+{
+	w,
+	vsrc,
+	isrc,
+	vcvs,
+	ccvs,
+	vccs,
+	cccs,
+	res,
+	cap,
+	ind
+};
 
 int main()
 {
@@ -42,105 +51,13 @@ int main()
 	c1.real(0);
 	complex<double> c3;
 	c3 = c2 / c1;
-	//Eigen::MatrixXcd m;
+	Eigen::MatrixXcd m;
 	Eigen::Matrix3cd f;
 	f <<  c1,c2,c3, 7.0 +5i, 8, 9,10,11,12;
 	cout << f<<endl;
-	/////////////////////////////////////Ahmed hany
-	int num_non_sim_nodes = 3;
-	int num = num_non_sim_nodes - 1;
-	int arr[2] = {1,2};
-	//Eigen::MatrixXd G(num, num);
-	Eigen::MatrixXcd m(num, num);
-	for (int i = 0; i < num; i++)
-	{
-		for (int j = 0; j < num; j++)
-		{
-			m(i, j).real(0);
-			m(i, j).imag(0);
-		}
-	}
-	Eigen::MatrixXcd I(num, 1);
-	/*m(0, 0).real(3);
-	m(0, 0).imag(5);
-	m(1, 0).real(3);
-	m(1, 0).imag(5);
-	m(2, 0).real(3);
-	m(2, 0).imag(5);
-	m(2, 2).real(3);
-	m(2, 2).imag(5);
-	cout << m;*/
-	for (int j = 0; j < num; j++)
-	{
-		for (int k = 0; k < num; k++)
-		{
-			complex <double> Admittance_s(0, 0);
-			complex <double> Admittance_d(0, 0);
-			for (int i = 0; i < counter; i++)
-			{
-				Component* comp = complist[i];
-				Resistance* resistance = dynamic_cast<Resistance*>(comp);
-				Inductor* inductor = dynamic_cast<Inductor*>(comp);
-				Capacaitor* capacaitor = dynamic_cast<Capacaitor*>(comp);
-				if (resistance != NULL)
-				{
-					if ((resistance->get_node1() == arr[k]) || (resistance->get_node2() == arr[k]))
-					{
-						complex <double> r;
-						r = 1.0 / resistance->get_Impedance();
-						Admittance_s += r;
-					}
-					if ((resistance->get_node1() == arr[j]) && (resistance->get_node2() == arr[k]))
-					{
-						complex <double> r;
-						r = 1.0 / resistance->get_Impedance();
-						Admittance_d += r;
-					}
-				}
-				else if (inductor != NULL)
-				{
-					if ((inductor->get_node1() == arr[k]) || (inductor->get_node2() == arr[k]))
-					{
-						complex <double> in;
-						in = inductor->get_Admittance();
-						Admittance_s += in;
-					}
-					if ((inductor->get_node1() == arr[j]) && (inductor->get_node2() == arr[k]))
-					{
-						complex <double> r;
-						r = 1.0 / inductor->get_Impedance();
-						Admittance_d += r;
-					}
-				}
-				else if (capacaitor != NULL)
-				{
-					if ((capacaitor->get_node1() == arr[k]) || (capacaitor->get_node2() == arr[k]))
-					{
-						complex <double> ca;
-						ca = capacaitor->get_Admittance();
-						Admittance_s += ca;
-					}
-					if ((capacaitor->get_node1() == arr[j]) && (capacaitor->get_node2() == arr[k]))
-					{
-						complex <double> r;
-						r = 1.0 / capacaitor->get_Impedance();
-						Admittance_d += r;
-					}
-					
-				}
-			}
-			if (j == k)
-			{
-				m(k, k) = Admittance_s;
-			}
-			else
-			{
-				m(j, k) = -Admittance_d;
-			}
-		}
-	}
+
 	
-	/// //////////////////////////////////
+
 	ifstream inputfile;
 	ofstream outputfile;
 	outputfile.open("circuit.txt");
@@ -252,22 +169,24 @@ int main()
 
 		}
 	}
+
+	int n = 2;
+	Branch** nbranch = new Branch * [n];
+	complex<double> zero;
+	zero.real(0);
+	zero.imag(0);
+	for (int i = 0; i < n; i++)
+	{
+		if (nbranch[i]->getcurrent().real() == zero.real() && nbranch[i]->getcurrent().imag() == zero.imag() && nbranch[i]->getz().real() > zero.real() && nbranch[i]->getz().imag() > zero.imag() && nbranch[i]->getvolt().getcomplex().real() > zero.real() && nbranch[i]->getvolt().getcomplex().imag() > zero.imag()) {
+			Branch q = *nbranch[i];
+			simplification(nbranch[i]->getvolt(), nbranch[i]->getz());
+			nbranch[i]->getvolt().zerosetters();
+		}
+	}
+
 	outputfile.close();
 	inputfile.close();
 	return 0;
-}//////////////////////////////Ahmed hany
-Component* searcher(string x)
-{
-	Component* comp = NULL;
-	for (int i = 0; i < counter; i++)
-	{
-		string name = complist[i]->get_name();
-		if ((name.compare(x) == 0))
-		{
-			comp = complist[i];
-		}
-	}
-	return comp;
 }
 	/*
 			switch (component)
@@ -296,3 +215,5 @@ Component* searcher(string x)
 				break;
 			}
 		}*/
+	
+	

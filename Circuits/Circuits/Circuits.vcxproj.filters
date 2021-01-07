@@ -36,6 +36,15 @@
     <ClCompile Include="Inductor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="vsrc.cpp">
+      <Filter>Header Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ccvs.cpp">
+      <Filter>Header Files</Filter>
+    </ClCompile>
+    <ClCompile Include="isrc.cpp">
+      <Filter>Header Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Component.h">
@@ -54,6 +63,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Branch.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="isrc.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="vsrc.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ccvs.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

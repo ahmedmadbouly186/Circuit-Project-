@@ -143,19 +143,25 @@
   <ItemGroup>
     <ClCompile Include="Branch.cpp" />
     <ClCompile Include="Capacaitor.cpp" />
+    <ClCompile Include="ccvs.cpp" />
     <ClCompile Include="Component.cpp" />
     <ClCompile Include="Inductor.cpp" />
+    <ClCompile Include="isrc.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Node.cpp" />
     <ClCompile Include="Resistance.cpp" />
+    <ClCompile Include="vsrc.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Branch.h" />
     <ClInclude Include="Capacaitor.h" />
+    <ClInclude Include="ccvs.h" />
     <ClInclude Include="Component.h" />
     <ClInclude Include="Inductor.h" />
+    <ClInclude Include="isrc.h" />
     <ClInclude Include="Node.h" />
     <ClInclude Include="Resistance.h" />
+    <ClInclude Include="vsrc.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
