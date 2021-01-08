@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="Branch.cpp" />
+    <ClCompile Include="Capacaitor.cpp" />
+    <ClCompile Include="Component.cpp" />
+    <ClCompile Include="Inductor.cpp" />
+    <ClCompile Include="isrc.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="Node.cpp" />
+    <ClCompile Include="Resistance.cpp" />
+    <ClCompile Include="vsrc.cpp" />
+    <ClCompile Include="Indepentsourcr.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Branch.h" />
+    <ClInclude Include="Capacaitor.h" />
+    <ClInclude Include="Component.h" />
+    <ClInclude Include="Inductor.h" />
+    <ClInclude Include="isrc.h" />
+    <ClInclude Include="Node.h" />
+    <ClInclude Include="Resistance.h" />
+    <ClInclude Include="vsrc.h" />
+    <ClInclude Include="Indepentsourcr.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="circuit.txt" />
+    <Text Include="netlist.txt" />
+  </ItemGroup>
+</Project>
