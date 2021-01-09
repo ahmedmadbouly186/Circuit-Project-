@@ -12,6 +12,7 @@
 #include"isrc.h"
 #include"Branch.h"
 #include "Node.h"
+#include "Current_C_Current.h"
 using namespace std;
 using namespace Eigen;
 using namespace std::complex_literals;
@@ -118,35 +119,14 @@ int main()
 			//complist[comcount++] = v1;
 			//outputfile << name << " " << Name << " " << n1 << " " << n2 << " " << n3 << " " << n4 <<" "<< Name2<<" "<<val<< endl;
 		}
-		else if (name == "ccvs")
-		{
-			/*string Name;
-			int n3, n4;
-			string Name2;
-			double val;
-			inputfile >> Name >> n1 >> n2 >> n3 >> n4 >> Name2 >> val;
-			outputfile << name << " " << Name << " " << n1 << " " << n2 << " " << n3 << " " << n4 << " " << Name2 << " " << val << endl;*/
-
-		}
-		else if (name == "vccs")
-		{
-			/*string Name;
-			int n3, n4;
-			string Name2;
-			double val;
-			inputfile >> Name >> n1 >> n2 >> n3 >> n4 >> Name2 >> val;
-			outputfile << name << " " << Name << " " << n1 << " " << n2 << " " << n3 << " " << n4 << " " << Name2 << " " << val << endl;*/
-
-		}
 		else if (name == "cccs" || name == "Cccs" || name == "CCcs")
 		{
-			/*string Name;
+			string Name;
 			int n3, n4;
 			string Name2;
 			double val;
-			inputfile >> Name >> n1 >> n2 >> n3 >> n4 >> Name2 >> val;
-			outputfile << name << " " << Name << " " << n1 << " " << n2 << " " << n3 << " " << n4 << " " << Name2 << " " << val << endl;*/
-
+			Current_C_Current* cccs = new Current_C_Current(n1,n2,Name,n3,n4,Name2,val);
+			complist[comcount++] = cccs;
 		}
 		else if (name == "res")
 		{
@@ -176,10 +156,6 @@ int main()
 			complist[comcount++] = v1;
 			//outputfile << name << " " << Name << " " << n1 << " " << n2 << " " << val << endl;
 		}
-		else
-		{
-
-		}
 		bool findN1 = false;
 		bool findN2 = false;
 		for (int i = 0; i < 10; i++)
@@ -206,7 +182,41 @@ int main()
 
 	outputfile.close();
 	inputfile.close();
+	/////////////////////////////////// Sabry ////////////////////////////////////////////
+	Current_C_Current* cccs;
+	for (int i = 0; i < comcount; i++)
+	{
+		cccs = dynamic_cast<Current_C_Current*>(complist[i]);
+		if (cccs != NULL)
+		{
+			break;
+		}
+	}
+	if (cccs != NULL)
+	{
+		for (int j = 0; j < comcount; j++)
+		{
+			if (cccs->get_Noded1() == complist[j]->get_node1() && cccs->get_Noded2() == complist[j]->get_node2())
+			{
+				Resistance* r1 = dynamic_cast <Resistance*>(complist[j]);
+				Capacaitor* c1 = dynamic_cast <Capacaitor*>(complist[j]);
+				Inductor* in1 = dynamic_cast <Inductor*>(complist[j]);
+				if (r1 != NULL)
+				{
+					cccs->set_Impedance(r1->get_Impedance());
+				}
+				else if(c1 !=NULL)
+				{
+					cccs->set_Impedance(c1->get_Impedance());
+				}
+				else if(in1 !=NULL)
+				{
+					cccs->set_Impedance(in1->get_Impedance());
+				}
 
+			}
+		}
+	}
 	////////////////////madbouly el gamed statr /////////////////////////
 	Nodelist = new Node * [nodecount];
 	for (int i = 0; i < nodecount; i++)
@@ -396,7 +406,6 @@ int main()
 	{
 		arr[i-1] = nonsimple_Nodelist[i]->getrank();
 	}
-	//Eigen::MatrixXd G(num, num);
 	Eigen::MatrixXcd m(num, num);
 	for (int i = 0; i < num; i++)
 	{
@@ -424,8 +433,6 @@ int main()
 	{
 		for (int k = 0; k < num; k++)
 		{
-			//
-			//
 			complex <double> Admittance_s(0, 0);
 			complex <double> Admittance_d(0, 0);
 			for (int i = 0; i < comcount; i++)
@@ -513,20 +520,46 @@ int main()
 			}
 		}
 	}
-
-	//for (int i=0;i<)
-	cout << m<<endl;
+	cout << m << endl;
 	cout << I << endl;
 	///////////////////////////sabry el gamed///////////////////////
+	// Dependent Source CCCs
+	int cccs_node1;
+	double sign = 1;
+	int index;
+	if (cccs != NULL)
+	{
+		for (int i = 1; i < nonsimple_nodecount; i++)
+		{
+			if (cccs->get_node1() == nonsimple_Nodelist[i]->getrank())
+			{
+				index = i;
+				sign *= 1;
+			}
+			else if (cccs->get_node2() == nonsimple_Nodelist[i]->getrank())
+			{
+				index = i;
+				sign *= -1;
+			}
+
+		}
+		for (int i = 1; i < nonsimple_nodecount; i++)
+		{
+			if(nonsimple_Nodelist[i]->getrank() == cccs->get_Noded1())
+			{
+				m(index - 1, i - 1) += sign * cccs->get_Admittance() * cccs->get_cofficient();
+			}
+			else if (nonsimple_Nodelist[i]->getrank() == cccs->get_Noded2())
+			{
+				m(index - 1, i - 1) -= sign * cccs->get_Admittance() * cccs->get_cofficient();
+			}
+		}
+	}
 	MatrixXcd V = CalculateVoltNode(m, I); // function calculate volt of each node
-	//Node* nodes = new Node[num];  // should be created above 
 	for (int i = 1; i < nonsimple_nodecount; i++)
 	{
 		nonsimple_Nodelist[i]->setvoltage(V(i-1, 0));
-	}
-
-	//Branch* branches = new Branch[num]; // should be created above  
-	int number_of_branchess; // should be created above 
+	}  
 	for (int i = 0; i < branchcount; i++)
 	{
 		Branchlist[i]->Calculatecurrent();

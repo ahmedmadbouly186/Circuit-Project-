@@ -3,11 +3,29 @@
 class Current_C_Current :public Dependent_sources
 {
 private:
-	Component* name_d;
+	complex <double> Impedance ;
+	string Name2;
 public:
-	Current_C_Current(int x1, int x2, string n, int d1, int d2, Component* n_d,double coff);
-	void set_name_d(Component* x);
-	Component* get_name_d();
-
+	Current_C_Current(int x1, int x2, string n, int d1, int d2, string name,double coff);
+	void set_Impedance(complex <double> z)
+	{
+		Impedance = z;
+	}
+	void set_name(string l)
+	{
+		Name2 = l;
+	}
+	string get_name()
+	{
+		return Name2;
+	}
+	complex <double> get_Impedance()
+	{
+		return Impedance;
+	}
+	complex <double> get_Admittance()
+	{
+		return 1.0 / Impedance;
+	}
 };
 
