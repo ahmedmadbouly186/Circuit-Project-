@@ -11,6 +11,9 @@
     <ClCompile Include="Resistance.cpp" />
     <ClCompile Include="vsrc.cpp" />
     <ClCompile Include="Indepentsourcr.cpp" />
+    <ClCompile Include="Dependent_sources.cpp" />
+    <ClCompile Include="Current_C_Current.cpp" />
+    <ClCompile Include="Voltage_C_Voltage.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Branch.h" />
@@ -22,6 +25,9 @@
     <ClInclude Include="Resistance.h" />
     <ClInclude Include="vsrc.h" />
     <ClInclude Include="Indepentsourcr.h" />
+    <ClInclude Include="Dependent_sources.h" />
+    <ClInclude Include="Current_C_Current.h" />
+    <ClInclude Include="Voltage_C_Voltage.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="circuit.txt" />

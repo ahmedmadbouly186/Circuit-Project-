@@ -45,22 +45,7 @@ Isrc * simplification(Vsrc* a, complex<double> b)
 //	c->zerosetters();
 	return c;
 }
-
 MatrixXcd CalculateVoltNode(MatrixXcd G, MatrixXcd I);
-//enum component
-//{
-//	w,
-//	vsrc,
-//	isrc,
-//	vcvs,
-//	ccvs,
-//	vccs,
-//	cccs,
-//	res,
-//	cap,
-//	ind
-//};
-
 int main()
 {
 	/*double c, a = 2;
@@ -94,7 +79,7 @@ int main()
 	{
 		int n1 = -1, n2 = -1;
 		inputfile >> name;
-		if (name == "w")
+		if (name == "w"|| name =="W")
 		{
 			double w;
 			inputfile >> w;
@@ -102,7 +87,7 @@ int main()
 			//outputfile << name << " " << w << endl;
 
 		}
-		else if (name == "vsrc")
+		else if (name == "vsrc" || name == "Vsrc" || name == "VSrc")
 		{
 			string Name;
 			double phase, magintude;
@@ -112,7 +97,7 @@ int main()
 			//outputfile << name << " " << Name << " " << n1 << " " << n2 << " " << magintude << " " << phase << endl;
 
 		}
-		else if (name == "isrc")
+		else if (name == "isrc" || name == "Isrc" || name == "ISrc")
 		{
 
 			string Name;
@@ -122,7 +107,7 @@ int main()
 			complist[comcount++] = v1;
 			//outputfile << name << " " << Name << " " << n1 << " " << n2 << " " << magintude << " " << phase << endl;
 		}
-		else if (name == "vcvs")
+		else if (name == "vcvs" || name == "Vcvs" || name == "VCvs")
 		{
 			/*string Name;
 			int n3, n4;
@@ -153,7 +138,7 @@ int main()
 			outputfile << name << " " << Name << " " << n1 << " " << n2 << " " << n3 << " " << n4 << " " << Name2 << " " << val << endl;*/
 
 		}
-		else if (name == "cccs")
+		else if (name == "cccs" || name == "Cccs" || name == "CCcs")
 		{
 			/*string Name;
 			int n3, n4;
@@ -380,19 +365,7 @@ int main()
 			counter++;
 		}
 	}
-
-
-	/*for (int i = 0; i < comcount; i++)
-	{
-
-	}*/
 	/////////////////////////madbouly el gamed end //////////////////////////
-
-
-
-
-
-
 	//int n = 2;
 	//Branch** nbranch = new Branch * [n];
 	complex<double> zero;
@@ -542,15 +515,8 @@ int main()
 	}
 
 	//for (int i=0;i<)
-
-
 	cout << m<<endl;
 	cout << I << endl;
-
-
-
-
-
 	///////////////////////////sabry el gamed///////////////////////
 	MatrixXcd V = CalculateVoltNode(m, I); // function calculate volt of each node
 	//Node* nodes = new Node[num];  // should be created above 
@@ -571,17 +537,13 @@ int main()
 	return 0;
 }
 
+///////////////////////////sabry el gamed///////////////////////
 MatrixXcd CalculateVoltNode(MatrixXcd G, MatrixXcd I)
 {
 	MatrixXcd V;
 	V = G.inverse() * I;
 	return V;
 }
-///////////////////////////sabry el gamed///////////////////////
-
-
-
-
 //////////////////////////////Ahmed hany
 Component* searcher(string x)
 {
@@ -596,49 +558,3 @@ Component* searcher(string x)
 	}
 	return comp;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*
-		switch (component)
-		{
-		case w:
-			break;
-		case vsrc:
-			break;
-		case isrc:
-			break;
-		case vcvs:
-			break;
-		case ccvs:
-			break;
-		case vccs:
-			break;
-		case cccs:
-			break;
-		case res:
-			break;
-		case cap:
-			break;
-		case ind:
-			break;
-		default:
-			break;
-		}
-	}*/
-

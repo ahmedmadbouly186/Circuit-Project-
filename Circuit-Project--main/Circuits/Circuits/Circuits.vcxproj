@@ -144,23 +144,29 @@
     <ClCompile Include="Branch.cpp" />
     <ClCompile Include="Capacaitor.cpp" />
     <ClCompile Include="Component.cpp" />
+    <ClCompile Include="Current_C_Current.cpp" />
+    <ClCompile Include="Dependent_sources.cpp" />
     <ClCompile Include="Indepentsourcr.cpp" />
     <ClCompile Include="Inductor.cpp" />
     <ClCompile Include="isrc.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Node.cpp" />
     <ClCompile Include="Resistance.cpp" />
+    <ClCompile Include="Voltage_C_Voltage.cpp" />
     <ClCompile Include="vsrc.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Branch.h" />
     <ClInclude Include="Capacaitor.h" />
     <ClInclude Include="Component.h" />
+    <ClInclude Include="Current_C_Current.h" />
+    <ClInclude Include="Dependent_sources.h" />
     <ClInclude Include="Indepentsourcr.h" />
     <ClInclude Include="Inductor.h" />
     <ClInclude Include="isrc.h" />
     <ClInclude Include="Node.h" />
     <ClInclude Include="Resistance.h" />
+    <ClInclude Include="Voltage_C_Voltage.h" />
     <ClInclude Include="vsrc.h" />
   </ItemGroup>
   <ItemGroup>

@@ -3,6 +3,6 @@
 class Voltage_C_Voltage: Dependent_sources
 {
 public:
-	Voltage_C_Voltage(Node* x1, Node* x2, string n, Node* d1, Node* d2, double coff);
+	Voltage_C_Voltage(int x1, int x2, string n, int d1, int d2, double coff);
 };
 

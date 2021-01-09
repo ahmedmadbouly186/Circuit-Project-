@@ -1,15 +1,16 @@
 #include "Dependent_sources.h"
-Dependent_sources::Dependent_sources(Node* x1, Node* x2, string n, Node* d1, Node* d2, double coff):Component(x1,x2,n)
+Dependent_sources::Dependent_sources(int x1, int x2, string n, int d1, int d2, double coff)
+	:Component (n,x1,x2)
 {
 	node_d1 = d1;
 	node_d2 = d2;
 	cofficient = coff;
 }
-void Dependent_sources::set_Noded1(Node* x)
+void Dependent_sources::set_Noded1(int x)
 {
 	node_d1 = x;
 }
-void Dependent_sources::set_Noded2(Node* x)
+void Dependent_sources::set_Noded2(int x)
 {
 	node_d2 = x;
 }
@@ -17,11 +18,11 @@ void Dependent_sources::set_cofficient(double x)
 {
 	cofficient = x;
 }
-Node* Dependent_sources::get_Noded1()
+int Dependent_sources::get_Noded1()
 {
 	return node_d1;
 }
-Node* Dependent_sources::get_Noded2()
+int Dependent_sources::get_Noded2()
 {
 	return node_d2;
 }

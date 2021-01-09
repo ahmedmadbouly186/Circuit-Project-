@@ -12,6 +12,10 @@ void Resistance::set_Impedance(double r)
 	z.real(r);
 	z.imag(0);
 }
+complex <double> Resistance::get_Admittance()
+{
+	return( 1.0/z);
+}
 complex <double> Resistance::get_Impedance()
 {
 	return z;
