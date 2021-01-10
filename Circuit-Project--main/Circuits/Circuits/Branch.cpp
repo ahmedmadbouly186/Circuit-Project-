@@ -28,6 +28,11 @@ void Branch::setcurentsource(Isrc* i)
 {
 	csource = i;
 }
+
+void Branch::setDependentCsource(Current_C_Current*D_I)
+{
+	dependentcsource = D_I;
+}
 Node* Branch::getnode1()
 {
 	return node1;
@@ -59,4 +64,8 @@ Vsrc *Branch::getvolt()
 Isrc* Branch::getcsource()
 {
 	return csource;
+}
+Current_C_Current* Branch::setDependentCsource()
+{
+	return dependentcsource;
 }

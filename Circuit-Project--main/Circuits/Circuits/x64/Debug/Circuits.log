@@ -1,0 +1,3 @@
+﻿  main.cpp
+C:\Users\kcs\Documents\GitHub\Circuit-Project-\Circuit-Project--main\Circuits\Circuits\main.cpp(603,6): warning C4101: 'cccs_node1': unreferenced local variable
+  Circuits.vcxproj -> C:\Users\kcs\Documents\GitHub\Circuit-Project-\Circuit-Project--main\Circuits\x64\Debug\Circuits.exe

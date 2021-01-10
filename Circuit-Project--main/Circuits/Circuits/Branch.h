@@ -3,6 +3,7 @@
 #include <complex>       
 #include "Node.h"
 #include "isrc.h"
+#include"Current_C_Current.h"
 using namespace std;
 
 #include"vsrc.h"
@@ -14,6 +15,8 @@ private:
 	complex <double> current;
 	Vsrc *volt;
 	Isrc* csource;
+	Current_C_Current* dependentcsource;
+
 public:
 	Branch(Node*, Node*);
 	void setnode1(Node* N1);
@@ -22,15 +25,25 @@ public:
 	void setcurrent(complex<double> c);
 	void setvolt(Vsrc *c);
 	void setcurentsource(Isrc*);
+	void setDependentCsource(Current_C_Current*);
 	Node* getnode1();
 	Node* getnode2();
 	complex <double>getz();
 	Vsrc *getvolt();
 	Isrc* getcsource();
+	Current_C_Current* setDependentCsource();
 	complex<double> getcurrent();
 	////////////// sabry
 
 	void Calculatecurrent();
+	complex <double> get_Admittance()
+	{
+		if (z == 0.0 + 0.0i)
+		{
+			return z;
+		}
+		return 1.0 / z;
+	}
 
 	///////////////
 	int getnum() {

@@ -1,4 +1,5 @@
 #include "Indepentsourcr.h"
+#include<cmath>
 Indepentsourcr::Indepentsourcr(string c, int a, int b, double x, double y) :Component(c, a, b) {
 
 	phase = x;
@@ -12,8 +13,9 @@ double Indepentsourcr::getphase() {
 	return phase;
 }
 complex<double> Indepentsourcr::getcomplex() {
-	x.real(mag * cos(phase));
-	x.imag(mag * sin(phase));
+	double angle = (phase / 180) * 3.14;
+	x.real(mag * cos(angle));
+	x.imag(mag * sin(angle));
 	return x;
 }
 Indepentsourcr::~Indepentsourcr() {}
