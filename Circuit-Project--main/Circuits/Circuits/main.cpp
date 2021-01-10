@@ -14,6 +14,7 @@
 #include "Node.h"
 #include"Dependent_sources.h"
 #include"Current_C_Current.h"
+#include"Voltage_C_Voltage.h"
 using namespace std;
 using namespace Eigen;
 using namespace std::complex_literals;
@@ -430,17 +431,12 @@ int main()
 					}
 				}
 				else
-				{
-
-				}
-
+				{}
 			}
 			counter++;
 		}
 	}
-
 	/////////////////////////madbouly el gamed end //////////////////////////
-
 	complex<double> zero;
 	zero.real(0);
 	zero.imag(0);
@@ -458,10 +454,6 @@ int main()
 		{
 			if ((Branchlist[i]->getvolt() != NULL))
 			{
-
-				/*if (Branchlist[i]->getcsource()->getcomplex().real() == zero.real() && Branchlist[i]->getcsource()->getcomplex().imag() == zero.imag() &&
-					(Branchlist[i]->getz().real() > zero.real() || Branchlist[i]->getz().imag() > zero.imag())
-					&& Branchlist[i]->getvolt()->getcomplex().real() > zero.real() && Branchlist[i]->getvolt()->getcomplex().imag() > zero.imag())*/
 				if (Branchlist[i]->getcsource() == NULL && Branchlist[i]->getz() != zero && Branchlist[i]->getvolt()->getcomplex() != zero)
 				{
 					//Branch q = *Branchlist[i];
@@ -469,7 +461,6 @@ int main()
 					c = simplification(Branchlist[i]->getvolt(), Branchlist[i]->getz(), Branchlist[i]->getnode1(), Branchlist[i]->getnode2());
 					complist[n] = c;
 					Branchlist[i]->getvolt()->zerosetters();
-
 				}
 			}
 
@@ -478,9 +469,6 @@ int main()
 	/////////////////////////////////////Ahmed hany
 	int num_non_sim_nodes = nonsimple_nodecount;
 	int num = num_non_sim_nodes - 1;
-	/*Node n1, n2;
-	Node* arr[2] = { &n1,&n2 };*/
-
 	int* arr;
 	arr = new int[nonsimple_nodecount - 1];
 	for (int i = 1; i < nonsimple_nodecount; i++)
@@ -503,44 +491,127 @@ int main()
 	{
 		I(i, 0) = 0;
 	}
-	/*for (int j = 1; j < num; j++)
+	//////////////////////////////Voltage Source Super Node Check /////////////////////////////////////////////////////
+	bool R1= false, R2 = false;
+	int reference1, reference2;
+	Vsrc* voltage_source = NULL;
+	for (int i = 0; i < comcount; i++)
+	{
+		voltage_source = dynamic_cast<Vsrc*> (complist[i]);
+		if (voltage_source != NULL)
+		{
+			for (int j = 1; j < nonsimple_nodecount; j++)
+			{
+				if (voltage_source->get_node1() == nonsimple_Nodelist[j]->getrank())
+				{
+					reference1 = j;
+					R1 = true;
+				}
+				if (voltage_source->get_node2() == nonsimple_Nodelist[j]->getrank())
+				{
+					reference2 = j;
+					R2 = true;
+				}
+			}
+		}
+	}
+	if (R1 && R2)
 	{
 		for (int k = 0; k < num; k++)
 		{
-			complex <double> Admittance_s(0, 0);
-			complex <double> Admittance_d(0, 0);
-			for (int i = 0; i < branchcount; i++)
+			if (voltage_source->get_node1() == nonsimple_Nodelist[k]->getrank())
 			{
-				complex <double> admit = Branchlist[i]->getz();
-				if ((Branchlist[i]->getnode1()->getrank() == arr[k]) || (Branchlist[i]->getnode2()->getrank() == arr[k]))
-				{
-					complex <double> r;
-					r = Branchlist[i]->get_Admittance();
-					Admittance_s += r;
-				}
+				m(0, k) = 1;
 			}
-			for (int l = 0; l < branchcount; l++)
+			else if (voltage_source->get_node2() == nonsimple_Nodelist[k]->getrank())
 			{
-				if (((Branchlist[l]->getnode1()->getrank() == arr[j - 1]) || (Branchlist[l]->getnode2()->getrank() == arr[j - 1])) &&
-					((Branchlist[l]->getnode1()->getrank() == arr[j])) || (Branchlist[l]->getnode2()->getrank() == arr[j]))
-				{
-					Admittance_d += Branchlist[l]->get_Admittance();
-				}
+				m(0, k) = -1;
 			}
-			m(k, k) = Admittance_s;
-			cout << m(k, k) << endl;
-			if (j!=k) {
-				m(j, k) = -Admittance_d;
-				m(k, j) = -Admittance_d;
+			else
+			{
+				m(0, k) = 0;
+			}
+			I(0, 0) = voltage_source->getcomplex();
+		}
+		complex <double> Admittance_d(0, 0);
+		for (int k = 0; k < branchcount; k++)
+		{
+
+			if (((Branchlist[k]->getnode1()->getrank() == arr[reference1]) || (Branchlist[k]->getnode2()->getrank() == arr[reference1]))
+				&& ((Branchlist[k]->getnode1()->getrank() != arr[reference2]) || (Branchlist[k]->getnode2()->getrank() != arr[reference2])))
+			{
+				Admittance_d += Branchlist[k]->get_Admittance();
 			}
 		}
-	}*/
+		m(1, reference1) = Admittance_d;
+		complex <double> Admittance_d2(0, 0);
+		for (int k = 0; k < branchcount; k++)
+		{
+
+			if (((Branchlist[k]->getnode1()->getrank() == arr[reference2]) || (Branchlist[k]->getnode2()->getrank() == arr[reference2]))
+				&& ((Branchlist[k]->getnode1()->getrank() != arr[reference1]) || (Branchlist[k]->getnode2()->getrank() != arr[reference1])))
+			{
+				Admittance_d2 += Branchlist[k]->get_Admittance();
+			}
+		}
+		m(1, reference2) = Admittance_d2;
+		Admittance_d2 = 0.0 + 0.0i;
+		complex <double> Admittance_d3(0, 0);
+		for (int i = 0; i < num; i++)
+		{
+			if (i != reference1 && i != reference2)
+			{
+				for (int k = 0; i < branchcount; k++)
+				{
+					if (Branchlist[k]->getnode1()->getrank() == arr[i] && Branchlist[k]->getnode2()->getrank() == arr[reference1] ||
+						Branchlist[k]->getnode2()->getrank() == arr[i] && Branchlist[k]->getnode1()->getrank() == arr[reference1])
+					{
+						Admittance_d2 += Branchlist[k]->get_Admittance();
+					}
+				}
+				for (int k = 0; i < branchcount; k++)
+				{
+					if (Branchlist[k]->getnode1()->getrank() == arr[i] && Branchlist[k]->getnode2()->getrank() == arr[reference2] ||
+						Branchlist[k]->getnode2()->getrank() == arr[i] && Branchlist[k]->getnode1()->getrank() == arr[reference2])
+					{
+						Admittance_d3 += Branchlist[k]->get_Admittance();
+					}
+				}
+			}
+			m(1, i) = -Admittance_d2+Admittance_d3;
+		}
+
+		for (int i = 2; i < num; i++)
+		{
+			for (int j = 0; j < num; j++)
+			{
+				if(arr[j] == voltage_source->get_node2() || arr[j]== voltage_source->get_node1())
+				{
+				}
+				else
+				{
+					complex <double> Admittance_s(0, 0);
+					if ((Branchlist[i]->getnode1()->getrank() == arr[j]) || (Branchlist[i]->getnode2()->getrank() == arr[j]))
+					{
+						complex <double> r;
+						r = Branchlist[i]->get_Admittance();
+						Admittance_s += r;
+						if ((Branchlist[i]->getnode1()->getrank()))
+						{
+
+						}
+					}
+				}
+			}
+		}
+	}
+	/////////////////////////////////////////   End ////////////////////////////////////////////////
+
 	for (int k = 0; k < num; k++)
 	{
 		complex <double> Admittance_s(0, 0);
 		for (int i = 0; i < branchcount; i++)
 		{
-			complex <double> admit = Branchlist[i]->getz();
 			if ((Branchlist[i]->getnode1()->getrank() == arr[k]) || (Branchlist[i]->getnode2()->getrank() == arr[k]))
 			{
 				complex <double> r;
@@ -550,7 +621,6 @@ int main()
 		}
 		m(k, k) = Admittance_s;
 	}
-	complex <double>* Glist = new complex <double>[num];
 	for (int v = 0; v < num; v++)
 	{
 		for (int k = v+1; k < num; k++)
@@ -590,15 +660,12 @@ int main()
 			}
 		}
 	}
-	
-	//for (int i=0;i<)
 	cout << "................" << endl;
 	cout << m<< endl;
 	cout << "................" << endl;
 	cout << I << endl;
 	cout << "................" << endl;
 	///////////////////////////sabry el gamed///////////////////////
-
 	// Dependent Source CCCs
 	int cccs_node1;
 	double sign = 1;
