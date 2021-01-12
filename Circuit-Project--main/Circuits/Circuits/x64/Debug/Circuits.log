@@ -1,3 +1,8 @@
 ﻿  main.cpp
-C:\Users\kcs\Documents\GitHub\Circuit-Project-\Circuit-Project--main\Circuits\Circuits\main.cpp(875,6): warning C4101: 'cccs_node1': unreferenced local variable
-  Circuits.vcxproj -> C:\Users\kcs\Documents\GitHub\Circuit-Project-\Circuit-Project--main\Circuits\x64\Debug\Circuits.exe
+E:\college\CMP first year\first term\circuits\project\f\Circuit-Project-\Circuit-Project--main\Circuits\Circuits\main.cpp(596,14): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+E:\college\CMP first year\first term\circuits\project\f\Circuit-Project-\Circuit-Project--main\Circuits\Circuits\main.cpp(606,14): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+E:\college\CMP first year\first term\circuits\project\f\Circuit-Project-\Circuit-Project--main\Circuits\Circuits\main.cpp(616,14): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+E:\college\CMP first year\first term\circuits\project\f\Circuit-Project-\Circuit-Project--main\Circuits\Circuits\main.cpp(919,6): warning C4101: 'cccs_node1': unreferenced local variable
+  vsrc.cpp
+  Generating Code...
+  Circuits.vcxproj -> E:\college\CMP first year\first term\circuits\project\f\Circuit-Project-\Circuit-Project--main\Circuits\x64\Debug\Circuits.exe

@@ -583,6 +583,50 @@ int main()
 				m(k, v) = -Admittance_d;
 			}
 		}
+		///////////////////////////////////////Ahmed
+		for (int i = 0; i < comcount; i++)
+		{
+			Voltage_C_Voltage* vv = dynamic_cast<Voltage_C_Voltage*>(complist[i]);
+			if (vv != NULL)
+			{
+				// node that is not equal to zero
+				int pos_node = vv->get_node1();
+				if (pos_node == 0)
+				{
+					int cof = -vv->get_cofficient();
+					int node_d_pos = vv->get_Noded1();
+					int node_d_neg = vv->get_Noded2();
+					int node_neg = vv->get_node2();
+					m(node_neg - 1, node_d_pos - 1) = cof;
+					m(node_neg - 1, node_d_neg - 1) = -cof;
+					m(node_neg - 1, node_neg - 1) = 1;
+				}
+				else if (vv->get_node2() == 0)
+				{
+					int cof = vv->get_cofficient();
+					int node_d_pos = vv->get_Noded1();
+					int node_d_neg = vv->get_Noded2();
+					int node_neg = vv->get_node2();
+					m(pos_node - 1, node_d_pos - 1) = -cof;
+					m(pos_node - 1, node_d_neg - 1) = cof;
+					m(pos_node - 1, pos_node - 1) = 1;
+				}
+				else
+				{
+					int cof = vv->get_cofficient();
+					int neg_node = vv->get_node2();
+					m(pos_node - 1, pos_node - 1) = 1;
+					m(pos_node - 1, neg_node - 1) = -1;
+					int node_d_pos = vv->get_Noded1();
+					int node_d_neg = vv->get_Noded2();
+					m(pos_node - 1, node_d_pos - 1) = -cof;
+					m(pos_node - 1, node_d_neg - 1) = cof;
+
+
+				}
+			}
+		}
+		////////////////////////////////////////Ahmed
 		for (int j = 0; j < no_Equations; j++)
 		{
 			for (int i = 0; i < comcount; i++)
