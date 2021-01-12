@@ -466,7 +466,7 @@ int main()
 
 		}
 	}
-	/////////////////////////////////////Ahmed hany
+	/////////////////////////////////////  Ahmed hany ///////////////////////////////////////////////////////////////
 	int num_non_sim_nodes = nonsimple_nodecount;
 	int num = num_non_sim_nodes - 1;
 	int* arr;
@@ -475,39 +475,182 @@ int main()
 	{
 		arr[i - 1] = nonsimple_Nodelist[i]->getrank();
 	}
-	cout << arr[0] << " " << arr[1] << " " << arr[2] << endl;
-	//Eigen::MatrixXd G(num, num);
-	Eigen::MatrixXcd m(num, num);
-	for (int i = 0; i < num; i++)
+	////////////////////////////// Special Case 1 /////////////////////////////////////////////////////////
+	///////////////////////////// voltage Source connected to reference node /////////////////////
+	int check_specialcase;
+	int no_Equations = num;
+	Node* node_reference =NULL;
+	for (int i = 0; i < branchcount; i++)
 	{
-		for (int j = 0; j < num; j++)
+		if (Branchlist[i]->getvolt() != NULL && Branchlist[i]->getz() == (0.0 + 0.0i))
+		{
+			if (Branchlist[i]->getnode1()->getrank() == arr[i])
+			{
+				no_Equations--;
+				node_reference = Branchlist[i]->getnode1();
+				node_reference->setvoltage(Branchlist[i]->getvolt()->getcomplex());
+				check_specialcase = Branchlist[i]->getnode1()->getrank();
+				break;
+			}
+			else if(Branchlist[i]->getnode2()->getrank() == arr[i])
+			{
+				no_Equations--;
+				node_reference = Branchlist[i]->getnode2();
+				node_reference->setvoltage(-Branchlist[i]->getvolt()->getcomplex());
+				check_specialcase = Branchlist[i]->getnode2()->getrank();
+				break;
+			}
+		}
+	}
+	Eigen::MatrixXcd m(no_Equations, no_Equations);
+	for (int i = 0; i < no_Equations; i++)
+	{
+		for (int j = 0; j < no_Equations; j++)
 		{
 			m(i, j).real(0);
 			m(i, j).imag(0);
 		}
 	}
-	Eigen::MatrixXcd I(num, 1);
-	for (int i = 0; i < num; i++)
+	Eigen::MatrixXcd I(no_Equations, 1);
+	for (int i = 0; i < no_Equations; i++)
 	{
 		I(i, 0) = 0;
+	}
+	complex<double>* admitt=new complex<double>[no_Equations];
+	for (int l = 0; l < no_Equations; l++)
+	{
+		admitt[l] = 0.0 + 0.0i;
+	}
+	if (node_reference != NULL)
+	{
+		int* arr2 = new int[no_Equations];
+		int k = 0;
+		for (int i = 0; i < num; i++)
+		{
+			if (arr[i] != check_specialcase)
+			{
+				arr2[k] = arr[i];
+				k++;
+			}
+
+		}
+		for (int i = 0; i < no_Equations; i++)
+		{
+			for (int k = 0; k < branchcount; k++)
+			{
+					if ((Branchlist[k]->getnode1()->getrank() == check_specialcase ||
+						Branchlist[k]->getnode2()->getrank() == check_specialcase) &&
+						(Branchlist[k]->getnode1()->getrank() == arr2[i] ||
+						Branchlist[k]->getnode2()->getrank() == arr2[i]))
+					{
+						admitt[i] += Branchlist[k]->get_Admittance();
+					}
+			}
+		}
+		for (int i = 0; i < no_Equations; i++)
+		{
+			I(i, 0) += node_reference->getvoltage() * admitt[i];
+		}
+
+		for (int k = 0; k < no_Equations; k++)
+		{
+			complex <double> Admittance_s(0, 0);
+			for (int i = 0; i < branchcount; i++)
+			{
+				if ((Branchlist[i]->getnode1()->getrank() == arr2[k]) || (Branchlist[i]->getnode2()->getrank() == arr2[k]))
+				{
+					complex <double> r;
+					r = Branchlist[i]->get_Admittance();
+					Admittance_s += r;
+				}
+			}
+			m(k, k) = Admittance_s;
+		}
+		for (int v = 0; v < no_Equations; v++)
+		{
+			for (int k = v + 1; k < no_Equations; k++)
+			{
+				complex <double> Admittance_d(0, 0);
+				for (int l = 0; l < branchcount; l++)
+				{
+					if (((Branchlist[l]->getnode1()->getrank() == arr2[v]) || (Branchlist[l]->getnode2()->getrank() == arr2[v]))
+						&& ((Branchlist[l]->getnode1()->getrank() == arr2[k]) || (Branchlist[l]->getnode2()->getrank() == arr2[k])))
+					{
+						Admittance_d += Branchlist[l]->get_Admittance();
+					}
+				}
+				m(v, k) = -Admittance_d;
+				m(k, v) = -Admittance_d;
+			}
+		}
+		for (int j = 0; j < no_Equations; j++)
+		{
+			for (int i = 0; i < comcount; i++)
+			{
+				Component* comp = complist[i];
+				Isrc* current = dynamic_cast<Isrc*>(comp);
+				if (current != NULL)
+				{
+					if (current->get_node1() == arr2[j])
+					{
+						complex <double> curr = current->getcomplex();
+						I(j, 0) += curr;
+
+					}
+					if (current->get_node2() == arr2[j])
+					{
+						complex <double> curr = -current->getcomplex();
+						I(j, 0) += curr;
+					}
+				}
+			}
+		}
+		cout << "................" << endl;
+		cout << m << endl;
+		cout << "................" << endl;
+		cout << I << endl;
+		cout << "................" << endl;
+		MatrixXcd V = CalculateVoltNode(m, I); // function calculate volt of each node
+		k = 0;
+		for (int i = 1; i < nonsimple_nodecount; i++)
+		{
+			if (nonsimple_Nodelist[i]->getrank() != check_specialcase)
+			{
+				nonsimple_Nodelist[i]->setvoltage(V(k, 0));
+				k++;
+			}
+		}
+		for (int i = 0; i < branchcount; i++)
+		{
+			Branchlist[i]->Calculatecurrent();
+			cout << "current " << i << " :" << Branchlist[i]->getcurrent();
+		}
+		cout << "................" << endl;
+		cout << V; 
+		cout << "................" << endl;
+
+		return 0;
 	}
 	//////////////////////////////Voltage Source Super Node Check /////////////////////////////////////////////////////
 	bool R1= false, R2 = false;
 	int reference1, reference2;
 	Vsrc* voltage_source = NULL;
+	Vsrc* voltage_source2 = NULL;
+
 	for (int i = 0; i < comcount; i++)
 	{
 		voltage_source = dynamic_cast<Vsrc*> (complist[i]);
 		if (voltage_source != NULL)
 		{
-			for (int j = 1; j < nonsimple_nodecount; j++)
+			for (int j = 0; j < num; j++)
 			{
-				if (voltage_source->get_node1() == nonsimple_Nodelist[j]->getrank())
+				if (voltage_source->get_node1() == arr[j])
 				{
+					voltage_source2 = voltage_source;
 					reference1 = j;
 					R1 = true;
 				}
-				if (voltage_source->get_node2() == nonsimple_Nodelist[j]->getrank())
+				if (voltage_source->get_node2() == arr[j])
 				{
 					reference2 = j;
 					R2 = true;
@@ -519,26 +662,30 @@ int main()
 	{
 		for (int k = 0; k < num; k++)
 		{
-			if (voltage_source->get_node1() == nonsimple_Nodelist[k]->getrank())
+			for (int i = 0; i < nonsimple_nodecount; i++)
 			{
-				m(0, k) = 1;
+				if (voltage_source2->get_node1() == nonsimple_Nodelist[i]->getrank())
+				{
+					m(0, reference1) = 1;
+				}
+				else if (voltage_source2->get_node2() == nonsimple_Nodelist[i]->getrank())
+				{
+					m(0, reference2) = -1;
+				}
+				else
+				{
+					m(0, k) = 0;
+				}
 			}
-			else if (voltage_source->get_node2() == nonsimple_Nodelist[k]->getrank())
-			{
-				m(0, k) = -1;
-			}
-			else
-			{
-				m(0, k) = 0;
-			}
-			I(0, 0) = voltage_source->getcomplex();
+			I(0, 0) = voltage_source2->getcomplex();
 		}
+		cout << m<<endl;
 		complex <double> Admittance_d(0, 0);
 		for (int k = 0; k < branchcount; k++)
 		{
 
 			if (((Branchlist[k]->getnode1()->getrank() == arr[reference1]) || (Branchlist[k]->getnode2()->getrank() == arr[reference1]))
-				&& ((Branchlist[k]->getnode1()->getrank() != arr[reference2]) || (Branchlist[k]->getnode2()->getrank() != arr[reference2])))
+				&& ((Branchlist[k]->getnode1()->getrank() != arr[reference2]) && (Branchlist[k]->getnode2()->getrank() != arr[reference2])))
 			{
 				Admittance_d += Branchlist[k]->get_Admittance();
 			}
@@ -549,7 +696,7 @@ int main()
 		{
 
 			if (((Branchlist[k]->getnode1()->getrank() == arr[reference2]) || (Branchlist[k]->getnode2()->getrank() == arr[reference2]))
-				&& ((Branchlist[k]->getnode1()->getrank() != arr[reference1]) || (Branchlist[k]->getnode2()->getrank() != arr[reference1])))
+				&& ((Branchlist[k]->getnode1()->getrank() != arr[reference1]) && (Branchlist[k]->getnode2()->getrank() != arr[reference1])))
 			{
 				Admittance_d2 += Branchlist[k]->get_Admittance();
 			}
@@ -561,7 +708,7 @@ int main()
 		{
 			if (i != reference1 && i != reference2)
 			{
-				for (int k = 0; i < branchcount; k++)
+				for (int k = 0; k < branchcount; k++)
 				{
 					if (Branchlist[k]->getnode1()->getrank() == arr[i] && Branchlist[k]->getnode2()->getrank() == arr[reference1] ||
 						Branchlist[k]->getnode2()->getrank() == arr[i] && Branchlist[k]->getnode1()->getrank() == arr[reference1])
@@ -569,7 +716,7 @@ int main()
 						Admittance_d2 += Branchlist[k]->get_Admittance();
 					}
 				}
-				for (int k = 0; i < branchcount; k++)
+				for (int k = 0; k < branchcount; k++)
 				{
 					if (Branchlist[k]->getnode1()->getrank() == arr[i] && Branchlist[k]->getnode2()->getrank() == arr[reference2] ||
 						Branchlist[k]->getnode2()->getrank() == arr[i] && Branchlist[k]->getnode1()->getrank() == arr[reference2])
@@ -577,8 +724,9 @@ int main()
 						Admittance_d3 += Branchlist[k]->get_Admittance();
 					}
 				}
+				m(1, i) = -Admittance_d2 + Admittance_d3;
 			}
-			m(1, i) = -Admittance_d2+Admittance_d3;
+
 		}
 
 		for (int i = 2; i < num; i++)
@@ -591,19 +739,76 @@ int main()
 				else
 				{
 					complex <double> Admittance_s(0, 0);
-					if ((Branchlist[i]->getnode1()->getrank() == arr[j]) || (Branchlist[i]->getnode2()->getrank() == arr[j]))
+					for (int k = 0; k < branchcount; k++)
 					{
-						complex <double> r;
-						r = Branchlist[i]->get_Admittance();
-						Admittance_s += r;
-						if ((Branchlist[i]->getnode1()->getrank()))
+						if ((Branchlist[i]->getnode1()->getrank() == arr[j]) || (Branchlist[i]->getnode2()->getrank() == arr[j]))
 						{
-
+							complex <double> r;
+							r = Branchlist[i]->get_Admittance();
+							Admittance_s += r;
+							if (Branchlist[i]->getnode1()->getrank() == arr[reference1] ||
+								Branchlist[i]->getnode2()->getrank() == arr[reference1])
+							{
+								Admittance_d = 0.0 + 0.0i;
+								Admittance_d = Branchlist[i]->get_Admittance();
+							}
+							if (Branchlist[i]->getnode1()->getrank() == arr[reference2] ||
+								Branchlist[i]->getnode2()->getrank() == arr[reference2])
+							{
+								Admittance_d2 = 0.0 + 0.0i;
+								Admittance_d2 = Branchlist[i]->get_Admittance();
+							}
 						}
 					}
+					m(i, j) = Admittance_s;
+					m(i, reference1) = -Admittance_d;
+					m(i, reference1) = -Admittance_d2;
 				}
 			}
 		}
+		////////////////// Calculate Currents ///////////////////////////////
+		for (int j = 0; j < num; j++)
+		{
+			for (int i = 0; i < comcount; i++)
+			{
+				Component* comp = complist[i];
+				Isrc* current = dynamic_cast<Isrc*>(comp);
+				if (current != NULL)
+				{
+					if (arr[j] != reference1 && arr[j] != reference2)
+					{
+					if (current->get_node1() == arr[j])
+					{
+						complex <double> curr = current->getcomplex();
+						I(j, 0) += curr;
+
+					}
+					if (current->get_node2() == arr[j])
+					{
+						complex <double> curr = -current->getcomplex();
+						I(j, 0) += curr;
+					}
+				}
+				}
+			}
+		}
+		cout << "................" << endl;
+		cout << m << endl;
+		cout << "................" << endl;
+		cout << I << endl;
+		cout << "................" << endl;
+		///////////////// calculate volts /////////////////////////////////
+		MatrixXcd V = CalculateVoltNode(m, I); // function calculate volt of each node
+		for (int i = 1; i < nonsimple_nodecount; i++)
+		{
+			nonsimple_Nodelist[i]->setvoltage(V(i - 1, 0));
+		}
+		for (int i = 0; i < branchcount; i++)
+		{
+			Branchlist[i]->Calculatecurrent();
+		}
+		cout << V;
+		return 0;
 	}
 	/////////////////////////////////////////   End ////////////////////////////////////////////////
 
@@ -707,7 +912,9 @@ int main()
 	{
 		Branchlist[i]->Calculatecurrent();
 	}
-	cout << V;
+	cout << V << endl;
+	cout << "..........................." << endl;
+	cout << m;
 	return 0;
 }
 

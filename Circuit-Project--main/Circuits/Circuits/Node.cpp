@@ -16,13 +16,13 @@ bool Node::ifsimple()
 void Node::increment_connections(Node* Node2)
 {
 	bool find = false;
-	for (int i = 0; i < 10; i++)
-	{
-		if (connections[i] == Node2)
-		{
-			find = true;
-		}
-	}
+	//for (int i = 0; i < 10; i++)
+	//{
+	//	if (connections[i] == Node2)
+	//	{
+	//		find = true;
+	//	}
+	//}
 	if (find == false) {
 		connections[num_connections++] = Node2;
 	}
